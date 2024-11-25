@@ -11,13 +11,19 @@ Sistema no qual estudantes podem cadastrar pedidos de horas complementares e coo
 ## Tecnologias Utilizadas
 - **Back-end**: A definir
 - **Front-end**: A definir
-- **Banco de Dados**: PostgreSQL
-- **Cloud**: A definir
+- **Banco de Dados**: PostgreSQL - <a href="https://tembo.io" target="_blank">Hospedagem PostgreSQL gratuita</a>
+- **Cloud**: <a href="https://render.com" target="_blank">Render</a>  ou <a href="https://fly.io" target="_blank">Fly</a> 
 
 ## Requisitos do Sistema
 Os requisitos completos do sistema estão detalhados no link abaixo:
 
-- Link para os Requisitos: <a href="https://docs.google.com/document/d/1f1ztqteCK3rcO5reMJGVe3HEpmQywSC8Hl-tpJypRkU/edit?usp=sharing" target="_blank">Requisitos do Sistema</a>
+- Link para os Requisitos: <a href="https://docs.google.com/document/d/1Z32zjK3VSAu5rSDCpFZb4ei8UcoqC9aEbYtabFV7LGA/" target="_blank">Requisitos do Sistema</a>
+
+## Protótipo 
+Os protótipos do sistema estão detalhados nos links abaixo, na versão criada inicialmente em mobile e para wev:
+
+- Link para a versão mobile: <a href="https://marvelapp.com/prototype/7h93bh3" target="_blank">Protótipo Mobile</a>
+- Link para a versão web: <a href="https://www.figma.com/design/bR8RcJPJw17U3qxbaLH3hn" target="_blank">Protótipo Web</a>
 
 ## Equipe
 - **Carlos Mosselman Cabral Neto** - [carlos.mosselman@ufba.br]
