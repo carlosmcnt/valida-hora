@@ -47,6 +47,21 @@ class UsuarioController {
         }
     }
 
+    async login(req, res) {
+        try {
+            const { email, senha } = req.body;
+            const usuario = await UsuarioService.login(email, senha);
+            if (!usuario) {
+                res.status(401).json({ message: 'Email ou senha inválidos' });
+            }
+            else {
+                res.json(usuario);
+            }
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
 }
 
 module.exports = new UsuarioController();
