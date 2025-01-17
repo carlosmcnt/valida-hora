@@ -17,6 +17,10 @@ class UsuarioService {
     async criarUsuario(usuario) {
         await Usuario.criarUsuario(usuario);
     }
+
+    async login(email, senha) {
+        return await Usuario.login(email, senha);
+    }
 }
 
 module.exports = new UsuarioService();
