@@ -9,7 +9,7 @@ class Pedido {
             database: process.env.DB_NAME,
             password: process.env.DB_PASSWORD,
             port: process.env.DB_PORT,
-            charset: 'UTF8',  // Certifique-se de que o charset esteja configurado corretamente
+            charset: 'UTF8',  
         });
 
         this.client.connect().then(() => {
@@ -19,8 +19,8 @@ class Pedido {
         });
     }
 
+    
     async criarPedido(pedido) {
-        // Consulta para inserir o pedido no banco de dados, incluindo o caminho do arquivo
         const query = `INSERT INTO pedidos (
             id_usuario, nome, matricula, curso, descricao, data_inicio, data_fim, ch_total, ch_pretendida, categoria, subcategoria, tipo, comprovante, status
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`;
@@ -38,19 +38,27 @@ class Pedido {
             pedido.categoria,
             pedido.subcategoria,
             pedido.tipo,
-            pedido.comprovante,  // Caminho do arquivo (se houver)
-            'pendente'  // Status padrão
+            pedido.comprovante,  
+            'pendente'  
         ];
 
-        // Executa a consulta e retorna o pedido completo, incluindo o arquivo, se fornecido
         const result = await this.client.query(query, values);
-        return result.rows[0];  // Retorna o pedido inserido, incluindo o caminho do arquivo
+        return result.rows[0];  
     }
 
+    
     async listarPedidosPorUsuario(id_usuario) {
         const query = 'SELECT * FROM pedidos WHERE id_usuario = $1';
         const result = await this.client.query(query, [id_usuario]);
         return result.rows;
+    }
+
+    
+    async atualizarStatusPedido(id_pedido, status) {
+        const query = 'UPDATE pedidos SET status = $1 WHERE id = $2 RETURNING *';
+        const values = [status, id_pedido];
+        const result = await this.client.query(query, values);
+        return result.rows[0];  
     }
 }
 
