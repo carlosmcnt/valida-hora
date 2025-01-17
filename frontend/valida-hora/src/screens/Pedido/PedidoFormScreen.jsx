@@ -1,13 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { HeaderPage } from "../../components/HeaderPage";
 import { FormButton } from "../../components/FormButton";
 import { style } from "../../styles/headerStyles";
 import { useNavigate } from "react-router-dom";
 
 import barema from "../../assets/barema.svg";
+import { formStyle } from "../../styles/formLoginStyle";
 
 const PedidoFormScreen = () => {
   const navigate = useNavigate();
+  const [fileName, setFileName] = useState("");
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setFileName(file.name);
+    }
+  };
   return (
     <div
       style={{
@@ -21,10 +30,8 @@ const PedidoFormScreen = () => {
       <div
         style={{
           width: "900px",
-          backgroundColor: "white",
           padding: 32,
           borderRadius: 8,
-          boxShadow: "2px 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
         <h1
@@ -54,65 +61,38 @@ const PedidoFormScreen = () => {
             }}
           >
             <div style={{ flex: 1 }}>
-              <label>Nome:</label>
+              <label htmlFor="name">Nome:</label>
               <input
                 type="text"
-                placeholder="Maria da Silva"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
+                value={"Maria da Silva"} //preencher com nome do usuário
+                style={formStyle.input}
               />
             </div>
             <div style={{ flex: 1 }}>
-              <label>Matrícula:</label>
+              <label htmlFor="registration">Matrícula:</label>
               <input
                 type="text"
-                placeholder="202419874"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
+                value={"202419874"} //preencher matricula
+                style={formStyle.input}
               />
             </div>
             <div style={{ flex: 1 }}>
-              <label>Curso:</label>
+              <label htmlFor="course">Curso:</label>
               <input
                 type="text"
-                placeholder="Ciência da Computação"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
+                value={"Ciência da Computação"}
+                style={formStyle.input}
               />
             </div>
           </div>
 
           <div>
-            <label>Descrição:</label>
+            <label htmlFor="description">Descrição:</label>
             <textarea
               placeholder="Digite aqui os detalhes do pedido"
               style={{
-                width: "100%",
-                padding: "8px",
-                height: "80px",
-                border: "1px solid #ccc",
-                borderRadius: 4,
+                height: "50px",
+                ...formStyle.input,
               }}
             />
           </div>
@@ -125,65 +105,27 @@ const PedidoFormScreen = () => {
             }}
           >
             <div style={{ flex: 1 }}>
-              <label>Data Início:</label>
-              <input
-                type="date"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
-              />
+              <label htmlFor="dtBegin">Data Início:</label>
+              <input type="date" style={formStyle.input} />
             </div>
             <div style={{ flex: 1 }}>
-              <label>Data Fim:</label>
-              <input
-                type="date"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
-              />
+              <label htmlFor="dtEnd">Data Fim:</label>
+              <input type="date" style={formStyle.input} />
             </div>
             <div style={{ flex: 1 }}>
-              <label>CH Total:</label>
+              <label htmlFor="chTotal">CH Total:</label>
               <input
                 type="text"
                 placeholder="50 horas"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
+                style={formStyle.input}
               />
             </div>
             <div style={{ flex: 1 }}>
-              <label>CH Pretendida:</label>
+              <label htmlFor="chRequired">CH Pretendida:</label>
               <input
                 type="text"
                 placeholder="20 horas"
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
+                style={formStyle.input}
               />
             </div>
           </div>
@@ -196,80 +138,59 @@ const PedidoFormScreen = () => {
             }}
           >
             <div style={{ flex: 1 }}>
-              <label>Selecione a categoria:</label>
-              <select
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
-              >
+              <label htmlFor="category">Selecione a categoria:</label>
+              <select style={formStyle.input}>
                 <option value="">Categoria 1</option>
                 <option value="">Categoria 2</option>
                 <option value="">Categoria 3</option>
               </select>
             </div>
             <div style={{ flex: 1 }}>
-              <label>Selecione a subcategoria:</label>
-              <select
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
-              >
+              <label htmlFor="subCategory">Selecione a subcategoria:</label>
+              <select style={formStyle.input}>
                 <option value="">Subcategoria 1</option>
                 <option value="">Subcategoria 2</option>
                 <option value="">Subcategoria 3</option>
               </select>
             </div>
             <div style={{ flex: 1 }}>
-              <label>Selecione o tipo:</label>
-              <select
-                style={{
-                  width: "100%",
-                  padding: "8px",
-                  border: "1px solid #ccc",
-                  borderRadius: 4,
-                  borderTop: "none",
-                  borderLeft: "none",
-                  borderRight: "none",
-                }}
-              >
+              <label htmlFor="type">Selecione o tipo:</label>
+              <select style={formStyle.input}>
                 <option value="">Tipo 1</option>
                 <option value="">Tipo 2</option>
                 <option value="">Tipo 3</option>
               </select>
             </div>
           </div>
-
-          <div style={{ marginTop: 16, marginBottom: 16 }}>
-            <label>Comprovante</label>
-            <input
-              type="file"
-              style={{
-                display: "block",
-                marginTop: 8,
-              }}
-            />
-          </div>
           <div style={{ display: "flex", flexDirection: "row", gap: 16 }}>
-            <label>Barema</label>
+            <div style={{ marginTop: 16, marginBottom: 16 }}>
+              <input
+                type="file"
+                id="fileInput"
+                style={formStyle.hiddenInput}
+                onChange={handleFileChange}
+              />
+              <label htmlFor="fileInput" style={formStyle.button}>
+                Selecionar Arquivo
+              </label>
+              {fileName && <span style={formStyle.fileName}>{fileName}</span>}
+            </div>
+          </div>
+          <div
+            style={{
+              marginTop: 16,
+              marginBottom: 16,
+            }}
+          >
+            <label htmlFor="barema">Barema</label>
             <button
-              style={{ border: "none", background: "none" }}
+              style={{ border: "none", background: "none", marginLeft: 10 }}
               type="button"
             >
               <img src={barema} alt="barema" style={{ width: 25 }} />
             </button>
           </div>
+
           <div
             style={{
               display: "flex",
@@ -290,6 +211,7 @@ const PedidoFormScreen = () => {
               value={"Salvar"}
               styles={{
                 width: 150,
+                backgroundColor: "#288be5",
               }}
             />
           </div>

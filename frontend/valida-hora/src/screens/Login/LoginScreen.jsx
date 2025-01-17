@@ -20,8 +20,8 @@ function LoginScreen() {
     }
 
     try {
-      // const usuario = await UsuarioService.login(email, password);
-      // console.log("Usuário logado:", usuario);
+      const usuario = await UsuarioService.login(email, password);
+      console.log("Usuário logado:", usuario);
       // Redirecionar
       navigate("/menu");
       alert("Login realizado com sucesso!");
