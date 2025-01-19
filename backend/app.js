@@ -6,6 +6,7 @@ const estudanteRoutes = require('./routes/estudanteRoute');
 const avaliadorRoutes = require('./routes/avaliadorRoute');
 const avaliacaoRoutes = require('./routes/avaliacaoRoute'); 
 const consultaRoutes = require('./routes/consultaRoute'); 
+const cancelamentoRoutes = require('./routes/cancelamentoRoute'); 
 
 
 const app = express();
@@ -30,7 +31,8 @@ app.use('/pedidos', pedidoRoutes);
 app.use('/pedidos', avaliacaoRoutes); 
 // Rotas de consultas
 app.use('/consultas', consultaRoutes); 
-
+// Rota para cancelamento
+app.use('/cancelamento', cancelamentoRoutes);
 
 
 // Middleware para rotas não encontradas
