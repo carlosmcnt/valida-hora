@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');  // Importando o pacote cors
 
 const usuarioRoutes = require('./routes/UsuarioRoute');
 const pedidoRoutes = require('./routes/PedidoRoute');
@@ -6,11 +7,14 @@ const cursoRoutes = require('./routes/CursoRoute');
 const baremaRoutes = require('./routes/baremaRoute');
 const estudanteRoutes = require('./routes/estudanteRoute');
 const avaliadorRoutes = require('./routes/avaliadorRoute');
-const avaliacaoRoutes = require('./routes/avaliacaoRoute');
-const consultaRoutes = require('./routes/consultaRoute');
-
+const avaliacaoRoutes = require('./routes/avaliacaoRoute'); 
+const consultaRoutes = require('./routes/consultaRoute'); 
+const cancelamentoRoutes = require('./routes/cancelamentoRoute'); 
 
 const app = express();
+
+// Usando o middleware CORS para permitir todas as origens (caso você queira uma origem específica, configure no lugar de 'cors()')
+app.use(cors()); 
 
 app.use(express.json());
 
@@ -35,9 +39,9 @@ app.use('/pedidos', pedidoRoutes);
 // Rotas de avaliações
 app.use('/pedidos', avaliacaoRoutes);
 // Rotas de consultas
-app.use('/consultas', consultaRoutes);
-
-
+app.use('/consultas', consultaRoutes); 
+// Rota para cancelamento
+app.use('/cancelamento', cancelamentoRoutes);
 
 // Middleware para rotas não encontradas
 app.use((req, res, next) => {
