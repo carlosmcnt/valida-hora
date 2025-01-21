@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');  // Importando o pacote cors
 
 const usuarioRoutes = require('./routes/UsuarioRoute');
-const pedidoRoutes = require('./routes/PedidoRoute'); 
+const pedidoRoutes = require('./routes/PedidoRoute');
+const cursoRoutes = require('./routes/CursoRoute');
+const baremaRoutes = require('./routes/baremaRoute');
 const estudanteRoutes = require('./routes/estudanteRoute');
 const avaliadorRoutes = require('./routes/avaliadorRoute');
 const avaliacaoRoutes = require('./routes/avaliacaoRoute'); 
@@ -26,12 +28,16 @@ app.use((req, res, next) => {
 app.use('/usuarios', usuarioRoutes);
 // Rotas de estudantes
 app.use('/estudantes', estudanteRoutes);
+// Rotas de baremas
+app.use('/baremas', baremaRoutes);
+// Rotas de cursos
+app.use('/cursos', cursoRoutes);
 // Rotas de avaliadores
 app.use('/avaliadores', avaliadorRoutes);
 // Rotas de pedidos
-app.use('/pedidos', pedidoRoutes); 
+app.use('/pedidos', pedidoRoutes);
 // Rotas de avaliações
-app.use('/pedidos', avaliacaoRoutes); 
+app.use('/pedidos', avaliacaoRoutes);
 // Rotas de consultas
 app.use('/consultas', consultaRoutes); 
 // Rota para cancelamento
