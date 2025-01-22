@@ -10,10 +10,11 @@ const avaliadorRoutes = require('./routes/avaliadorRoute');
 const avaliacaoRoutes = require('./routes/avaliacaoRoute'); 
 const consultaRoutes = require('./routes/consultaRoute'); 
 const cancelamentoRoutes = require('./routes/cancelamentoRoute'); 
+const historicoRoutes = require('./routes/historicoRoute');
 
 const app = express();
 
-// Usando o middleware CORS para permitir todas as origens (caso você queira uma origem específica, configure no lugar de 'cors()')
+// Usando o middleware CORS para permitir todas as origens 
 app.use(cors()); 
 
 app.use(express.json());
@@ -42,6 +43,8 @@ app.use('/pedidos', avaliacaoRoutes);
 app.use('/consultas', consultaRoutes); 
 // Rota para cancelamento
 app.use('/cancelamento', cancelamentoRoutes);
+// Rota para histórico
+app.use('/historico', historicoRoutes);
 
 // Middleware para rotas não encontradas
 app.use((req, res, next) => {
