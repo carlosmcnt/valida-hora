@@ -19,7 +19,7 @@ class PedidoController {
             }
 
             pedido.nome = usuario.nome;
-            pedido.matricula = usuario.matricula;
+            pedido.matricula_aluno = usuario.matricula_aluno;
             pedido.curso = usuario.curso;
 
             const comprovante = req.file;

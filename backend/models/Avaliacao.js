@@ -19,28 +19,33 @@ class Avaliacao {
         });
     }
 
-    
-    async salvarAvaliacao(id_pedido, status, carga_horaria_aprovada, comentario) {
-        const query = `INSERT INTO avaliacoes (
-            id_pedido, status, carga_horaria_aprovada, comentario
-        ) VALUES ($1, $2, $3, $4) RETURNING *`;
-
-        const values = [
-            id_pedido,
-            status,
-            carga_horaria_aprovada,
-            comentario || null,  
-        ];
-
-        const result = await this.client.query(query, values);
-        return result.rows[0];  
+    // Recuperar os valores atuais do pedido (ch_pretendida, subcategoria, tipo)
+    async buscarValoresAtuais(id_pedido) {
+        const query = 'SELECT ch_pretendida, subcategoria, tipo FROM pedidos WHERE id_pedido = $1';
+        const result = await this.client.query(query, [id_pedido]);
+        if (result.rows.length === 0) {
+            throw new Error('Pedido não encontrado');
+        }
+        return result.rows[0];
     }
 
-    
-    async buscarAvaliacaoPorPedido(id_pedido) {
-        const query = 'SELECT * FROM avaliacoes WHERE id_pedido = $1';
-        const result = await this.client.query(query, [id_pedido]);
-        return result.rows[0];  
+    // Atualizar os valores conforme necessário (com o uso de COALESCE)
+    async atualizarValores(id_pedido, ch_pretendida, subcategoria, tipo) {
+        const query = `
+            UPDATE pedidos
+            SET 
+                ch_pretendida = COALESCE($1, ch_pretendida),
+                subcategoria = COALESCE($2, subcategoria),
+                tipo = COALESCE($3, tipo)
+            WHERE id_pedido = $4
+            RETURNING *;
+        `;
+        const values = [ch_pretendida, subcategoria, tipo, id_pedido];
+        const result = await this.client.query(query, values);
+        if (result.rows.length === 0) {
+            throw new Error('Falha ao atualizar pedido');
+        }
+        return result.rows[0];  // Retorna o pedido atualizado
     }
 }
 
