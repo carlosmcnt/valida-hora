@@ -1,6 +1,5 @@
-const { express } = require('express');
-
-const { CursoController } = require('../controllers/cursoController');
+const express = require('express');
+const CursoController = require('../controllers/cursoController'); // Corrigido aqui
 
 const router = express.Router();
 
@@ -10,3 +9,4 @@ router.get('/ch-total-ext/:id', CursoController.obterCargaHorariaTotalExtensaoPo
 router.get('/ch-total-comp/:id', CursoController.obterCargaHorariaTotalComplementarPorCursoId);
 
 module.exports = router;
+

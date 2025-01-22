@@ -1,6 +1,5 @@
-const { express } = require('express');
-
-const { BaremaController } = require('../controllers/baremaController');
+const express = require('express');
+const BaremaController = require('../controllers/baremaController'); // Importação corrigida
 
 const router = express.Router();
 

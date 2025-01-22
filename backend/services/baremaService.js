@@ -1,4 +1,4 @@
-const Barema = require('../models/baremaModel');
+const Barema = require('../models/Barema');
 
 class BaremaService {
 
