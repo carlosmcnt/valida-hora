@@ -20,7 +20,6 @@ class Cancelamento {
     }
 
     async cancelarPedido(id_pedido) {
-        
         const verificarStatusQuery = 'SELECT * FROM pedidos WHERE id_pedido = $1';
         const statusResult = await this.client.query(verificarStatusQuery, [id_pedido]);
     
@@ -29,16 +28,15 @@ class Cancelamento {
         }
     
         const pedido = statusResult.rows[0];
-        if (pedido.status !== 'pendente') {
+        if (pedido.status !== 0) { // Verificando se o status é 0 (pendente)
             throw new Error('Somente pedidos com status "pendente" podem ser cancelados.');
         }
     
-        
         const deleteQuery = 'DELETE FROM pedidos WHERE id_pedido = $1 RETURNING *';
         const deleteResult = await this.client.query(deleteQuery, [id_pedido]);
         return deleteResult.rows[0]; 
     }
-    
 }
 
 module.exports = new Cancelamento();
+

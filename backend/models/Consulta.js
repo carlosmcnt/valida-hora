@@ -19,21 +19,18 @@ class Consulta {
         });
     }
 
-   
-    async buscarPedidosPorUsuario(id_usuario) {
-        const query = 'SELECT * FROM pedidos WHERE id_usuario = $1';
-        const result = await this.client.query(query, [id_usuario]);
+    async buscarPedidosPorMatricula(matricula_aluno) {
+        const query = 'SELECT * FROM pedidos WHERE matricula_aluno = $1';
+        const result = await this.client.query(query, [matricula_aluno]);
         return result.rows;
     }
 
-    
     async buscarPedidosPorStatus(status) {
         const query = 'SELECT * FROM pedidos WHERE status = $1';
         const result = await this.client.query(query, [status]);
         return result.rows;
     }
 
-   
     async buscarTodosOsPedidos() {
         const query = 'SELECT * FROM pedidos';
         const result = await this.client.query(query);

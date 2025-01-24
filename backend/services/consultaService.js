@@ -1,8 +1,8 @@
 const Consulta = require('../models/Consulta');
 
 class ConsultaService {
-    async listarPedidosPorUsuario(id_usuario) {
-        return await Consulta.buscarPedidosPorUsuario(id_usuario);
+    async listarPedidosPorMatricula(matricula_aluno) {
+        return await Consulta.buscarPedidosPorMatricula(matricula_aluno);
     }
 
     async listarPedidosPorStatus(status) {
@@ -15,3 +15,5 @@ class ConsultaService {
 }
 
 module.exports = new ConsultaService();
+
+

@@ -7,6 +7,11 @@ class AvaliacaoController {
             const { id_pedido } = req.params;
             const { status, carga_horaria_aprovada, comentario, ch_pretendida, categoria, subcategoria = null, tipo = null } = req.body;
 
+            // Verificando se categoria, subcategoria, e tipo são números
+            if (isNaN(categoria) || isNaN(subcategoria) || isNaN(tipo)) {
+                return res.status(400).json({ message: 'Categoria, subcategoria e tipo devem ser números.' });
+            }
+
             // Buscar os valores atuais do banco de dados, incluindo todos os campos necessários
             const queryValoresAtuais = `
                 SELECT id_usuario, nome, matricula_aluno, id_curso, descricao, data_inicio, data_fim, 
@@ -23,7 +28,7 @@ class AvaliacaoController {
             const valoresAtuais = resultValoresAtuais.rows[0];
 
             // Verificar se o pedido já foi avaliado (status diferente de 'pendente')
-            if (valoresAtuais.status !== 'pendente') {
+            if (valoresAtuais.status !== 0) { // Verificando se o status é 0 (pendente)
                 return res.status(400).json({ message: 'Este pedido já foi avaliado e não pode ser reavaliado.' });
             }
 
@@ -102,7 +107,7 @@ class AvaliacaoController {
                 subcategoria: pedido.subcategoria,    // Valor vindo do banco
                 tipo: pedido.tipo,                    // Valor vindo do banco
                 comprovante: pedido.comprovante,
-                status: pedido.status === 'pendente' ? 'pendente' : pedido.status // Garantir o status se não fornecido
+                status: pedido.status === 0 ? 'pendente' : (pedido.status === 1 ? 'aprovado' : 'reprovado') // Garantir o status numérico
             };
 
             res.json(avaliacao);
@@ -114,4 +119,3 @@ class AvaliacaoController {
 }
 
 module.exports = new AvaliacaoController();
-

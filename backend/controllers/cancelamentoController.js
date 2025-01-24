@@ -22,4 +22,3 @@ class CancelamentoController {
 }
 
 module.exports = new CancelamentoController();
-
