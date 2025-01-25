@@ -4,7 +4,6 @@ const fs = require('fs');
 const path = require('path');
 
 class PedidoController {
-    // Função para criar pedido
     async criarPedido(req, res) {
         try {
             console.log("Request Body:", req.body);
@@ -13,16 +12,18 @@ class PedidoController {
             const pedido = req.body;
             const id_usuario = pedido.id_usuario;
 
-            // Verifica se os valores de categoria, subcategoria e tipo são números
             pedido.categoria = Number(pedido.categoria);
-            pedido.subcategoria = Number(pedido.subcategoria);
             pedido.tipo = Number(pedido.tipo);
 
-            if (isNaN(pedido.categoria) || isNaN(pedido.subcategoria) || isNaN(pedido.tipo)) {
-                return res.status(400).json({ message: 'Categoria, subcategoria e tipo devem ser números.' });
+            if (isNaN(pedido.categoria) || isNaN(pedido.tipo)) {
+                return res.status(400).json({ message: 'Categoria e tipo devem ser números.' });
             }
 
-            // Obtém informações do usuário
+        
+            if (pedido.subcategoria !== undefined && pedido.subcategoria !== null && isNaN(pedido.subcategoria)) {
+                return res.status(400).json({ message: 'Subcategoria, se fornecida, deve ser um número.' });
+            }
+
             const usuario = await UsuarioService.obterUsuarioPorId(id_usuario);
             if (!usuario) {
                 return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -48,7 +49,6 @@ class PedidoController {
         }
     }
 
-    // Função para listar pedidos por usuário
     async listarPedidosPorUsuario(req, res) {
         const { id_usuario } = req.params;
         try {
@@ -60,11 +60,9 @@ class PedidoController {
         }
     }
 
-    // Função para baixar comprovante
     async baixarComprovante(req, res) {
         const { id_pedido } = req.params;
         try {
-            // Lógica para encontrar o comprovante no banco de dados
             const pedido = await PedidoService.buscarPedidoPorId(id_pedido);
             if (!pedido) {
                 return res.status(404).json({ message: 'Pedido não encontrado' });
@@ -80,3 +78,4 @@ class PedidoController {
 }
 
 module.exports = new PedidoController();
+

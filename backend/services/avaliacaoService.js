@@ -1,13 +1,8 @@
 const Pedido = require('../models/Pedido'); 
 
 class AvaliacaoService {
-    // Método para salvar avaliação, atualizando os campos conforme necessário
+    
     async salvarAvaliacao(id_pedido, status, carga_horaria_aprovada, comentario, subcategoria = null, tipo = null) {
-        // Garantir que status seja um número válido
-        if (![0, 1, 2].includes(status)) {
-            throw new Error('Status inválido. Use 0 para pendente, 1 para aprovado ou 2 para reprovado.');
-        }
-
         const query = `
             UPDATE pedidos
             SET 

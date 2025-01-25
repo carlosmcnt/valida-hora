@@ -15,5 +15,3 @@ class ConsultaService {
 }
 
 module.exports = new ConsultaService();
-
-
