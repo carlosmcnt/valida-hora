@@ -1,7 +1,7 @@
 const Pedido = require('../models/Pedido'); 
 
 class AvaliacaoService {
-    // Método para salvar avaliação, atualizando os campos conforme necessário
+    
     async salvarAvaliacao(id_pedido, status, carga_horaria_aprovada, comentario, subcategoria = null, tipo = null) {
         const query = `
             UPDATE pedidos

@@ -1,5 +1,5 @@
-const PedidoService = require('../services/PedidoService');
-const UsuarioService = require('../services/UsuarioService');
+const PedidoService = require('../services/pedidoService');
+const UsuarioService = require('../services/usuarioService');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,7 +12,18 @@ class PedidoController {
             const pedido = req.body;
             const id_usuario = pedido.id_usuario;
 
-            // Obtém informações do usuário
+            pedido.categoria = Number(pedido.categoria);
+            pedido.tipo = Number(pedido.tipo);
+
+            if (isNaN(pedido.categoria) || isNaN(pedido.tipo)) {
+                return res.status(400).json({ message: 'Categoria e tipo devem ser números.' });
+            }
+
+        
+            if (pedido.subcategoria !== undefined && pedido.subcategoria !== null && isNaN(pedido.subcategoria)) {
+                return res.status(400).json({ message: 'Subcategoria, se fornecida, deve ser um número.' });
+            }
+
             const usuario = await UsuarioService.obterUsuarioPorId(id_usuario);
             if (!usuario) {
                 return res.status(404).json({ message: 'Usuário não encontrado' });
@@ -39,42 +50,32 @@ class PedidoController {
     }
 
     async listarPedidosPorUsuario(req, res) {
+        const { id_usuario } = req.params;
         try {
-            const id_usuario = req.params.id_usuario;
             const pedidos = await PedidoService.listarPedidosPorUsuario(id_usuario);
-            res.json(pedidos);
+            res.status(200).json({ pedidos });
         } catch (error) {
+            console.error('Erro ao listar pedidos:', error.message);
             res.status(500).json({ message: error.message });
         }
     }
 
     async baixarComprovante(req, res) {
+        const { id_pedido } = req.params;
         try {
-            const { id_pedido } = req.params;
-
-            
-            const pedido = await PedidoService.obterPedidoPorId(id_pedido);
+            const pedido = await PedidoService.buscarPedidoPorId(id_pedido);
             if (!pedido) {
-                return res.status(404).json({ message: 'Pedido não encontrado.' });
+                return res.status(404).json({ message: 'Pedido não encontrado' });
             }
 
-            const comprovantePath = pedido.comprovante;
-            if (!comprovantePath || !fs.existsSync(comprovantePath)) {
-                return res.status(404).json({ message: 'Comprovante não encontrado.' });
-            }
-
-            
-            res.download(comprovantePath, path.basename(comprovantePath), (err) => {
-                if (err) {
-                    console.error('Erro ao enviar o comprovante:', err);
-                    res.status(500).json({ message: 'Erro ao enviar o comprovante.' });
-                }
-            });
+            const filePath = path.join(__dirname, '../', pedido.comprovante);
+            res.download(filePath);
         } catch (error) {
-            console.error('Erro ao baixar o comprovante:', error.message);
+            console.error('Erro ao baixar comprovante:', error.message);
             res.status(500).json({ message: error.message });
         }
     }
 }
 
 module.exports = new PedidoController();
+
