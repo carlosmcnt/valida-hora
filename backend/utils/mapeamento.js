@@ -104,7 +104,7 @@ const categorias = {
   const statusMapping = {
       0: 'pendente',
       1: 'aprovado',
-      2: 'rejeitado'
+      2: 'reprovado'
   };
   
   module.exports = { categorias, cursoMapping, statusMapping };

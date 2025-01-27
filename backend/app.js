@@ -1,5 +1,5 @@
 const express = require('express');
-const cors = require('cors');  // Importando o pacote cors
+const cors = require('cors');  
 
 const usuarioRoutes = require('./routes/UsuarioRoute');
 const pedidoRoutes = require('./routes/PedidoRoute');
@@ -11,6 +11,7 @@ const avaliacaoRoutes = require('./routes/avaliacaoRoute');
 const consultaRoutes = require('./routes/consultaRoute'); 
 const cancelamentoRoutes = require('./routes/cancelamentoRoute'); 
 const historicoRoutes = require('./routes/historicoRoute');
+const filaRoutes = require('./routes/filaRoute');
 
 const app = express();
 
@@ -45,6 +46,8 @@ app.use('/consultas', consultaRoutes);
 app.use('/cancelamento', cancelamentoRoutes);
 // Rota para histórico
 app.use('/historico', historicoRoutes);
+// Rota para fila
+app.use('/fila', filaRoutes);
 
 // Middleware para rotas não encontradas
 app.use((req, res, next) => {
