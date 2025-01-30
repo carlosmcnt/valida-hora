@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const { categoria1Mapping, categoria2Mapping, cursoMapping } = require('../utils/mapeamento');
+const { categorias, cursoMapping } = require('../utils/mapeamento');
 require('dotenv').config();
 
 class Pedido {
@@ -16,35 +16,37 @@ class Pedido {
         this.client.connect().then(() => {
             console.log('Conectado ao banco de dados para pedidos');
         }).catch((error) => {
-            console.log('Erro ao conectar ao banco de dados para pedidos:', error);
+            console.error('Erro ao conectar ao banco de dados para pedidos:', error);
         });
     }
 
-    
+    // Função simplificada para obter o nome da categoria, subcategoria e tipo
     getNomeCategoria(categoria, subcategoria, tipo) {
-        let nomeCategoria = '';
-        let nomeSubcategoria = '';
-        let nomeTipo = '';
+        const categoriaData = categorias[`categoria${categoria}`];
 
-        if (categoria === 1) {
-            nomeCategoria = categoria1Mapping[subcategoria]?.nome || 'Categoria não encontrada';
-            nomeSubcategoria = categoria1Mapping[subcategoria]?.tipos[tipo] || 'Subcategoria não encontrada';
-            nomeTipo = categoria1Mapping[subcategoria]?.tipos[tipo] || 'Tipo não encontrado';
-        } else if (categoria === 2) {
-            nomeCategoria = categoria2Mapping[subcategoria] || 'Categoria não encontrada';
-            nomeTipo = categoria2Mapping[tipo] || 'Tipo não encontrado';
+        if (!categoriaData) {
+            return { nomeCategoria: 'Categoria não encontrada', nomeSubcategoria: '', nomeTipo: '' };
         }
+
+        const subcategoriaData = categoriaData.subcategorias[subcategoria];
+        if (!subcategoriaData) {
+            return { nomeCategoria: categoriaData.nome, nomeSubcategoria: 'Subcategoria não encontrada', nomeTipo: '' };
+        }
+
+        const nomeCategoria = categoriaData.nome;
+        const nomeSubcategoria = subcategoriaData.nome;
+        const nomeTipo = subcategoriaData.atividades[tipo] || 'Tipo não encontrado';
 
         return { nomeCategoria, nomeSubcategoria, nomeTipo };
     }
 
-   
     async criarPedido(pedido) {
-        const queryUsuario = 
-            `SELECT u.nome, e.matricula_aluno, e.id_curso
+        const queryUsuario = `
+            SELECT u.nome, e.matricula_aluno, e.id_curso
             FROM usuario u
             INNER JOIN estudante e ON u.id_usuario = e.id_usuario
-            WHERE u.id_usuario = $1`;
+            WHERE u.id_usuario = $1
+        `;
 
         const resultUsuario = await this.client.query(queryUsuario, [pedido.id_usuario]);
 
@@ -54,17 +56,25 @@ class Pedido {
 
         const { nome, matricula_aluno, id_curso } = resultUsuario.rows[0];
 
-        const nomeCurso = cursoMapping[id_curso] || 'Curso não encontrado';
+        const categoriaNum = Number(pedido.categoria);
+        const subcategoriaNum = Number(pedido.subcategoria);
+        const tipoNum = Number(pedido.tipo);
 
-        const categoriaNum = pedido.categoria; 
-        const subcategoriaNum = pedido.subcategoria; 
-        const tipoNum = pedido.tipo; 
+        let comprovanteBuffer = null;
+        if (pedido.comprovante) {
+            if (Buffer.isBuffer(pedido.comprovante)) {
+                comprovanteBuffer = pedido.comprovante;
+            } else {
+                throw new Error('O comprovante deve ser um arquivo binário.');
+            }
+        }
 
-        
         const queryPedido = `
-        INSERT INTO pedidos (
-            id_usuario, nome, matricula_aluno, id_curso, descricao, data_inicio, data_fim, ch_total, ch_pretendida, categoria, subcategoria, tipo, comprovante, status
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`;
+            INSERT INTO pedidos (
+                id_usuario, nome, matricula_aluno, id_curso, descricao, data_inicio, data_fim, 
+                ch_total, ch_pretendida, categoria, subcategoria, tipo, comprovante, status
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *
+        `;
 
         const values = [
             pedido.id_usuario,
@@ -76,21 +86,19 @@ class Pedido {
             pedido.data_fim,
             pedido.ch_total,
             pedido.ch_pretendida,
-            categoriaNum,   
-            subcategoriaNum, 
-            tipoNum, 
-            pedido.comprovante,
-            0 
+            categoriaNum,
+            subcategoriaNum,
+            tipoNum,
+            comprovanteBuffer,
+            0
         ];
 
         const resultPedido = await this.client.query(queryPedido, values);
         return resultPedido.rows[0];
     }
 
-
     async buscarPedidoPorId(id_pedido) {
-        const query = 
-            `SELECT * FROM pedidos WHERE id_pedido = $1`;
+        const query = `SELECT * FROM pedidos WHERE id_pedido = $1`;
 
         const result = await this.client.query(query, [id_pedido]);
         if (result.rowCount === 0) {
@@ -102,10 +110,8 @@ class Pedido {
         return { ...pedido, nome_curso: nomeCurso };
     }
 
-    
     async listarPedidos() {
-        const query = 
-            `SELECT * FROM pedidos`;
+        const query = `SELECT * FROM pedidos`;
 
         const result = await this.client.query(query);
         return result.rows.map((pedido) => {
@@ -114,10 +120,8 @@ class Pedido {
         });
     }
 
-    
     async listarPedidosPorUsuario(id_usuario) {
-        const query = 
-            `SELECT * FROM pedidos WHERE id_usuario = $1`;
+        const query = `SELECT * FROM pedidos WHERE id_usuario = $1`;
 
         const result = await this.client.query(query, [id_usuario]);
         return result.rows.map((pedido) => {
@@ -128,6 +132,5 @@ class Pedido {
 }
 
 module.exports = new Pedido();
-
 
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const PedidoController = require('../controllers/pedidoController');
+const PedidoController = require('../controllers/PedidoController');
 const multer = require('multer');
 
 const upload = multer({ dest: 'uploads/' });
