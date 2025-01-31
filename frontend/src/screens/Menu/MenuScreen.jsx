@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 const MenuScreen = () => {
   const navigate = useNavigate();
-
+  const usuarioSalvo = JSON.parse(localStorage.getItem("usuario"));
   const handleRealizarPedido = () => {
     navigate("/pedido"); // Redireciona para a rota do formulário de pedido
   };
@@ -23,7 +23,7 @@ const MenuScreen = () => {
       }}
     >
       <HeaderPage style={style} />
-      <h2>Olá {}, o que você deseja fazer?</h2>
+      <h2>Olá {usuarioSalvo?.nome}, o que você deseja fazer?</h2>
       <FormButton
         value={"Realizar Pedido"}
         onClick={handleRealizarPedido}

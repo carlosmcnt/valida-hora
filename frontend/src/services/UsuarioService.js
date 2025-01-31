@@ -12,6 +12,16 @@ const UsuarioService = {
       throw error.response?.data || { message: "Erro ao fazer login" };
     }
   },
+  async getAluno(id) {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/estudantes/${id}`);
+      return response.data;
+      
+    } catch (error) {
+      console.error("Erro ao buscar aluno:", error.response?.data || error.message);
+      throw error.response?.data || { message: "Erro ao buscar aluno" };
+    }
+  },
 };
-
 export default UsuarioService;
+
