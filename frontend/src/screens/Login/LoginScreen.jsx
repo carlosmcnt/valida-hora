@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FormInput } from "../../components/FormInput";
 import { FormButton } from "../../components/FormButton";
 import UsuarioService from "../../services/UsuarioService";
 import { useNavigate } from "react-router-dom";
 import { HeaderPage } from "../../components/HeaderPage";
 import { style } from "../../styles/headerStyles";
+import useUserStore from "../../auth-store";
 
 function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { user, setUser } = useUserStore();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +23,9 @@ function LoginScreen() {
 
     try {
       const usuario = await UsuarioService.login(email, password);
-      console.log("Usuário logado:", usuario);
+      setUser(usuario);
+      localStorage.setItem("usuario", JSON.stringify(usuario));
+      console.log("Usuário logado:", user, usuario);
       // Redirecionar
       navigate("/menu");
       alert("Login realizado com sucesso!");
@@ -29,6 +33,13 @@ function LoginScreen() {
       alert(error.message || "Erro ao fazer login");
     }
   };
+
+  useEffect(() => {
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (usuarioSalvo) {
+      setUser(JSON.parse(usuarioSalvo));
+    }
+  }, [setUser]);
 
   return (
     <div
