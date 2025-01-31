@@ -35,17 +35,32 @@ class Avaliador {
     }
 
     async criarAvaliador(avaliador) {
-        const queryUsuario = `INSERT INTO Usuario (nome, email, senha) 
-            VALUES ($1, $2, $3) 
-            RETURNING id_usuario`;
-        const senhaCriptografada = criptografarSenha(avaliador.senha);
-        const resultUsuario = await this.client.query(queryUsuario, [avaliador.nome, avaliador.email, senhaCriptografada]);
-        const idUsuario = resultUsuario.rows[0].id_usuario;
-
-        const queryAvaliador = `INSERT INTO Avaliador (id_usuario, matricula_docente, departamento, id_perfil_avaliador) 
-            VALUES ($1, $2, $3)`;
-        await this.client.query(queryAvaliador, [idUsuario, avaliador.matricula_docente, avaliador.departamento, avaliador.id_perfil_avaliador]);
+        console.log('Função criarAvaliador chamada');  // Log para verificar execução da função
+        try {
+            const queryUsuario = `INSERT INTO Usuario (nome, email, senha) 
+                VALUES ($1, $2, $3) 
+                RETURNING id_usuario`;
+            const senhaCriptografada = criptografarSenha(avaliador.senha);
+            const resultUsuario = await this.client.query(queryUsuario, [avaliador.nome, avaliador.email, senhaCriptografada]);
+    
+            console.log('Usuario inserido com sucesso', resultUsuario);  // Log para verificar inserção de Usuario
+    
+            const idUsuario = resultUsuario.rows[0].id_usuario;
+    
+            const queryAvaliador = `INSERT INTO Avaliador (id_usuario, matricula_docente, departamento, id_perfil_avaliador) 
+                VALUES ($1, $2, $3, $4)`;
+            const resultAvaliador = await this.client.query(queryAvaliador, [idUsuario, avaliador.matricula_docente, avaliador.departamento, avaliador.id_perfil_avaliador]);
+    
+            console.log('Avaliador inserido com sucesso', resultAvaliador);  // Log para verificar inserção de Avaliador
+    
+            return { message: 'Avaliador criado com sucesso!', status: 'success' };
+        } catch (error) {
+            console.log('Erro ao criar avaliador:', error);  // Log para capturar erros
+            return { message: 'Erro ao criar avaliador', status: 'error', error: error.message };
+        }
     }
+    
+
 
     async deletarAvaliador(id) {
         const queryAvaliador = `DELETE FROM Avaliador WHERE id_usuario = $1`;
