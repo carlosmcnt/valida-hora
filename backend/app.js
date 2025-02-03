@@ -12,6 +12,7 @@ const consultaRoutes = require('./routes/consultaRoute');
 const cancelamentoRoutes = require('./routes/cancelamentoRoute'); 
 const historicoRoutes = require('./routes/historicoRoute');
 const filaRoutes = require('./routes/filaRoute');
+const exportacaoPedidoRoutes = require('./routes/exportacaoPedidoRoute');
 
 const app = express();
 
@@ -48,6 +49,8 @@ app.use('/cancelamento', cancelamentoRoutes);
 app.use('/historico', historicoRoutes);
 // Rota para fila
 app.use('/fila', filaRoutes);
+// Rota para exportação (Txt) de pedido
+app.use('/exportacao', exportacaoPedidoRoutes);
 
 // Middleware para rotas não encontradas
 app.use((req, res, next) => {
