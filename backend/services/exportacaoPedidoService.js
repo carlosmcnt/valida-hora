@@ -55,7 +55,7 @@ class ExportacaoService {
             VALUES ($1, $2, $3, NOW())
         `;
 
-        await this.client.query(query, [id_usuario, nomeArquivo, conteudo]);
+        await Exportacao.client.query(query, [id_usuario, nomeArquivo, conteudo]);
     }
 }
 

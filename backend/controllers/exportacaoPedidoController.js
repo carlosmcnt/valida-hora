@@ -18,6 +18,7 @@ class ExportacaoController {
         try {
             const { id_usuario } = req.params;
 
+            
             const result = await Exportacao.buscarArquivoPorUsuario(id_usuario);
 
             if (result.length === 0) {

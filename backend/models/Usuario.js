@@ -3,7 +3,6 @@ require('dotenv').config();
 const { criptografarSenha, descriptografarSenha } = require('../utils/validador');
 
 class Usuario {
-
     constructor() {
         this.client = new Client({
             user: process.env.DB_USER,
@@ -19,7 +18,6 @@ class Usuario {
         }).catch((error) => {
             console.log('Erro ao conectar ao banco de dados:', error);
         });
-
     }
 
     async listarTodosUsuarios() {
@@ -29,12 +27,58 @@ class Usuario {
 
     async obterUsuarioPorId(id) {
         const result = await this.client.query('SELECT * FROM usuario WHERE id_usuario = $1', [id]);
-        return result.rows[0];
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const usuario = result.rows[0];
+
+        
+        const resultEstudante = await this.client.query('SELECT matricula_aluno FROM estudante WHERE id_usuario = $1', [id]);
+        if (resultEstudante.rows.length > 0) {
+            usuario.tipo = 'estudante';
+            usuario.matricula = resultEstudante.rows[0].matricula_aluno;
+            return usuario;
+        }
+
+        
+        const resultAvaliador = await this.client.query('SELECT id_usuario FROM avaliador WHERE id_usuario = $1', [id]);
+        if (resultAvaliador.rows.length > 0) {
+            usuario.tipo = 'avaliador';
+            return usuario;
+        }
+
+        usuario.tipo = 'desconhecido';
+        return usuario;
     }
 
     async obterUsuarioPorEmail(email) {
         const result = await this.client.query('SELECT * FROM usuario WHERE email = $1', [email]);
-        return result.rows[0];
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const usuario = result.rows[0];
+
+        
+        const resultEstudante = await this.client.query('SELECT matricula_aluno FROM estudante WHERE id_usuario = $1', [usuario.id_usuario]);
+        if (resultEstudante.rows.length > 0) {
+            usuario.tipo = 'estudante';
+            usuario.matricula = resultEstudante.rows[0].matricula_aluno;
+            return usuario;
+        }
+
+        
+        const resultAvaliador = await this.client.query('SELECT id_usuario FROM avaliador WHERE id_usuario = $1', [usuario.id_usuario]);
+        if (resultAvaliador.rows.length > 0) {
+            usuario.tipo = 'avaliador';
+            return usuario;
+        }
+
+        usuario.tipo = 'desconhecido';
+        return usuario;
     }
 
     async deletarUsuarioPorId(id) {
@@ -47,21 +91,15 @@ class Usuario {
     }
 
     async login(email, senha) {
-        const result = await this.client.query('SELECT senha FROM usuario WHERE email = $1', [email]);
-        if (result.rows.length === 0) {
+        const usuario = await this.obterUsuarioPorEmail(email);
+
+        if (!usuario) {
             return null;
         }
-        else {
-            const senhaDescriptografada = descriptografarSenha(result.rows[0].senha);
-            if (senhaDescriptografada === senha) {
-                return await this.obterUsuarioPorEmail(email);
-            }
-            else {
-                return null;
-            }
-        }
-    }
 
+        const senhaDescriptografada = descriptografarSenha(usuario.senha);
+        return senhaDescriptografada === senha ? usuario : null;
+    }
 }
 
 module.exports = new Usuario();
