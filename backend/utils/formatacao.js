@@ -44,4 +44,13 @@ function converterNomes(pedido) {
     };
 }
 
-module.exports = { converterNomes };
+function formatarData(data) {
+    if (!data) return 'Data desconhecida';
+    return new Date(data).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+module.exports = { converterNomes, formatarData };
