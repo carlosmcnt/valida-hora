@@ -1,9 +1,9 @@
 const { Client } = require('pg');
 require('dotenv').config();
 const { criptografarSenha, descriptografarSenha } = require('../utils/validador');
+const { determinarTipoUsuario } = require('../utils/tipoUsuario'); 
 
 class Usuario {
-
     constructor() {
         this.client = new Client({
             user: process.env.DB_USER,
@@ -19,7 +19,6 @@ class Usuario {
         }).catch((error) => {
             console.log('Erro ao conectar ao banco de dados:', error);
         });
-
     }
 
     async listarTodosUsuarios() {
@@ -29,12 +28,39 @@ class Usuario {
 
     async obterUsuarioPorId(id) {
         const result = await this.client.query('SELECT * FROM usuario WHERE id_usuario = $1', [id]);
-        return result.rows[0];
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const usuario = result.rows[0];
+
+        
+        const tipoUsuario = await determinarTipoUsuario(id);
+        usuario.tipo = tipoUsuario.tipo;
+        if (tipoUsuario.tipo === 'estudante') {
+            usuario.matricula = tipoUsuario.matricula;
+        }
+
+        return usuario;
     }
 
     async obterUsuarioPorEmail(email) {
         const result = await this.client.query('SELECT * FROM usuario WHERE email = $1', [email]);
-        return result.rows[0];
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const usuario = result.rows[0];
+
+        const tipoUsuario = await determinarTipoUsuario(usuario.id_usuario);
+        usuario.tipo = tipoUsuario.tipo;
+        if (tipoUsuario.tipo === 'estudante') {
+            usuario.matricula = tipoUsuario.matricula;
+        }
+
+        return usuario;
     }
 
     async deletarUsuarioPorId(id) {
@@ -47,21 +73,39 @@ class Usuario {
     }
 
     async login(email, senha) {
-        const result = await this.client.query('SELECT senha FROM usuario WHERE email = $1', [email]);
-        if (result.rows.length === 0) {
-            return null;
+        
+        const usuario = await this.obterUsuarioPorEmail(email);
+    
+        
+        if (!usuario) {
+            return { success: false, message: 'Usuário não encontrado' };
         }
-        else {
-            const senhaDescriptografada = descriptografarSenha(result.rows[0].senha);
-            if (senhaDescriptografada === senha) {
-                return await this.obterUsuarioPorEmail(email);
-            }
-            else {
-                return null;
-            }
+    
+        
+        const senhaDescriptografada = descriptografarSenha(usuario.senha);
+    
+      
+        if (senhaDescriptografada !== senha) {
+            return { success: false, message: 'Senha incorreta' };
         }
+    
+       
+        const tipoUsuario = await determinarTipoUsuario(usuario.id_usuario);
+        usuario.tipo = tipoUsuario.tipo;
+    
+        
+        if (tipoUsuario.tipo === 'estudante') {
+            usuario.matricula = tipoUsuario.matricula;
+        }
+    
+        
+        return {
+            success: true,
+            message: 'Login realizado com sucesso',
+            usuario: usuario
+        };
     }
-
+    
 }
 
 module.exports = new Usuario();

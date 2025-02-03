@@ -1,6 +1,6 @@
 const { Client } = require('pg');
 require('dotenv').config();
-const { converterNomes } = require('../utils/formatacao');  // Importando o converterNomes
+const { converterNomes } = require('../utils/formatacao');
 
 class Consulta {
     constructor() {
@@ -23,20 +23,38 @@ class Consulta {
     async buscarPedidosPorMatricula(matricula_aluno) {
         const query = 'SELECT * FROM pedidos WHERE matricula_aluno = $1';
         const result = await this.client.query(query, [matricula_aluno]);
-        return result.rows.map(converterNomes);  // Usando o converterNomes aqui
+        return result.rows.map(converterNomes);
     }
 
-    async buscarPedidosPorStatus(status) {
-        const query = 'SELECT * FROM pedidos WHERE status = $1';
-        const result = await this.client.query(query, [status]);
-        return result.rows.map(converterNomes);  // Usando o converterNomes aqui
-    }
+    
+    async buscarPedidosPorStatus(status, id_usuario = null, tipo_usuario = null) {
+        let query = 'SELECT * FROM pedidos WHERE status = $1';
+        let params = [status];
+    
 
-    async buscarTodosOsPedidos() {
-        const query = 'SELECT * FROM pedidos';
-        const result = await this.client.query(query);
-        return result.rows.map(converterNomes);  // Usando o converterNomes aqui
+        if (tipo_usuario === 'estudante') {
+            query += ' AND id_usuario = $2';
+            params.push(id_usuario);
+        }
+    
+        const result = await this.client.query(query, params);
+        return result.rows.map(converterNomes);
     }
+    
+    async buscarTodosOsPedidos(id_usuario = null, tipo_usuario = null) {
+        let query = 'SELECT * FROM pedidos';
+        let params = [];
+    
+        
+        if (tipo_usuario === 'estudante') {
+            query += ' WHERE id_usuario = $1';
+            params.push(id_usuario);
+        }
+    
+        const result = await this.client.query(query, params);
+        return result.rows.map(converterNomes);
+    }
+    
 }
 
 module.exports = new Consulta();

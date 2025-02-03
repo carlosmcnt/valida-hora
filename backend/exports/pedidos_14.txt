@@ -1,0 +1,47 @@
+Pedidos Aprovados - Usuário ID: 14
+
+Pedido 1:
+Nome: Mariana Oliveira
+Matrícula: 100004
+Curso: BSI
+Descrição: Atividade complementar realizada em curso de liderança.
+Data de Início: 10/01/2025
+Data de Fim: 12/01/2025
+CH Total: 20
+CH Pretendida: 20
+Categoria: Outras Atividades Complementares
+Subcategoria: Intervenção Organizacional
+Tipo: Participação em comissão organizadora de eventos de caráter científico e/ou acadêmico
+Status: Aprovado
+--------------------------------
+
+Pedido 2:
+Nome: Mariana Oliveira
+Matrícula: 100004
+Curso: BSI
+Descrição: Atividade complementar realizada em curso de liderança.
+Data de Início: 10/01/2025
+Data de Fim: 12/01/2025
+CH Total: 20
+CH Pretendida: 40
+Categoria: Outras Atividades Complementares
+Subcategoria: Eventos Técnicos Científicos
+Tipo: Associação em sociedade científica (ex.: SBC, IEEE, ACM)
+Status: Aprovado
+--------------------------------
+
+Pedido 3:
+Nome: Mariana Oliveira
+Matrícula: 100004
+Curso: BSI
+Descrição: Atividade complementar realizada em curso de liderança.
+Data de Início: 10/01/2025
+Data de Fim: 12/01/2025
+CH Total: 50
+CH Pretendida: 50
+Categoria: Extensão
+Subcategoria: Programa de Extensão (projetos e outras ações de extensão universitária, cursos, eventos, prestação de serviços)
+Tipo: Programa de Extensão (projetos e outras ações de extensão universitária, cursos, eventos, prestação de serviços)
+Status: Aprovado
+--------------------------------
+
