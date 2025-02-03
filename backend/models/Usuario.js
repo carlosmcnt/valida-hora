@@ -1,6 +1,7 @@
 const { Client } = require('pg');
 require('dotenv').config();
 const { criptografarSenha, descriptografarSenha } = require('../utils/validador');
+const { determinarTipoUsuario } = require('../utils/tipoUsuario'); 
 
 class Usuario {
     constructor() {
@@ -35,21 +36,12 @@ class Usuario {
         const usuario = result.rows[0];
 
         
-        const resultEstudante = await this.client.query('SELECT matricula_aluno FROM estudante WHERE id_usuario = $1', [id]);
-        if (resultEstudante.rows.length > 0) {
-            usuario.tipo = 'estudante';
-            usuario.matricula = resultEstudante.rows[0].matricula_aluno;
-            return usuario;
+        const tipoUsuario = await determinarTipoUsuario(id);
+        usuario.tipo = tipoUsuario.tipo;
+        if (tipoUsuario.tipo === 'estudante') {
+            usuario.matricula = tipoUsuario.matricula;
         }
 
-        
-        const resultAvaliador = await this.client.query('SELECT id_usuario FROM avaliador WHERE id_usuario = $1', [id]);
-        if (resultAvaliador.rows.length > 0) {
-            usuario.tipo = 'avaliador';
-            return usuario;
-        }
-
-        usuario.tipo = 'desconhecido';
         return usuario;
     }
 
@@ -62,22 +54,12 @@ class Usuario {
 
         const usuario = result.rows[0];
 
-        
-        const resultEstudante = await this.client.query('SELECT matricula_aluno FROM estudante WHERE id_usuario = $1', [usuario.id_usuario]);
-        if (resultEstudante.rows.length > 0) {
-            usuario.tipo = 'estudante';
-            usuario.matricula = resultEstudante.rows[0].matricula_aluno;
-            return usuario;
+        const tipoUsuario = await determinarTipoUsuario(usuario.id_usuario);
+        usuario.tipo = tipoUsuario.tipo;
+        if (tipoUsuario.tipo === 'estudante') {
+            usuario.matricula = tipoUsuario.matricula;
         }
 
-        
-        const resultAvaliador = await this.client.query('SELECT id_usuario FROM avaliador WHERE id_usuario = $1', [usuario.id_usuario]);
-        if (resultAvaliador.rows.length > 0) {
-            usuario.tipo = 'avaliador';
-            return usuario;
-        }
-
-        usuario.tipo = 'desconhecido';
         return usuario;
     }
 
@@ -91,15 +73,39 @@ class Usuario {
     }
 
     async login(email, senha) {
+        
         const usuario = await this.obterUsuarioPorEmail(email);
-
+    
+        
         if (!usuario) {
-            return null;
+            return { success: false, message: 'Usuário não encontrado' };
         }
-
+    
+        
         const senhaDescriptografada = descriptografarSenha(usuario.senha);
-        return senhaDescriptografada === senha ? usuario : null;
+    
+      
+        if (senhaDescriptografada !== senha) {
+            return { success: false, message: 'Senha incorreta' };
+        }
+    
+       
+        const tipoUsuario = await determinarTipoUsuario(usuario.id_usuario);
+        usuario.tipo = tipoUsuario.tipo;
+    
+        
+        if (tipoUsuario.tipo === 'estudante') {
+            usuario.matricula = tipoUsuario.matricula;
+        }
+    
+        
+        return {
+            success: true,
+            message: 'Login realizado com sucesso',
+            usuario: usuario
+        };
     }
+    
 }
 
 module.exports = new Usuario();
