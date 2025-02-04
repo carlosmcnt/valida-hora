@@ -54,7 +54,25 @@ class Exportacao {
             console.error('Erro ao buscar arquivo:', error);
             throw new Error('Erro ao buscar arquivo do banco de dados.');
         }
+    } 
+
+    async buscarPedidoAprovadoPorId(id_pedido) {
+        try {
+            const query = 
+                `SELECT nome_arquivo, conteudo FROM exportacoes
+                WHERE id_pedido = $1
+                ORDER BY data_criacao DESC LIMIT 1`;
+    
+            const result = await this.client.query(query, [id_pedido]);
+            
+            
+            return result.rows;
+        } catch (error) {
+            console.error('Erro ao buscar arquivo do pedido:', error);
+            throw new Error('Erro ao buscar arquivo do pedido no banco de dados.');
+        }
     }
+    
 }
 
 module.exports = new Exportacao();
