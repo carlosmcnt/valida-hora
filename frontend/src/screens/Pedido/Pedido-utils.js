@@ -111,3 +111,17 @@ export const categorias = [
     }
   }
 ];
+
+export const statusMapping = [
+  {nome: 'pendente', value: 0},
+  {nome: 'aprovado', value: 1},
+  {nome: 'reprovado', value: 2}
+];
+
+export const formatarData = (dataISO) => {
+  return new Date(dataISO).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};

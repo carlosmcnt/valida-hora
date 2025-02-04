@@ -14,7 +14,7 @@ import usePedidoStore from "./Pedido-store";
 const PedidoFormScreen = () => {
   const navigate = useNavigate();
 
-  const {setEstudante, estudante } = useUserStore();
+  const { setEstudante, estudante } = useUserStore();
   const usuarioSalvo = JSON.parse(localStorage.getItem("usuario"));
 
   const {
@@ -43,17 +43,16 @@ const PedidoFormScreen = () => {
 
   const getEstudante = async () => {
     try {
-      const estudante = await UsuarioService.getAluno(usuarioSalvo?.id_usuario);
+      const estudante = await UsuarioService.getAluno(usuarioSalvo?.usuario.id_usuario);
       setEstudante(estudante);
     } catch (error) {
       alert(error.message || "Erro ao buscar estudante");
     }
   };
-console.log(usuarioSalvo);
 
   useEffect(() => {
     getEstudante();
-  }, [usuarioSalvo?.id_usuario]);
+  }, [usuarioSalvo?.usuario.id_usuario]);
 
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -63,7 +62,7 @@ console.log(usuarioSalvo);
       alert("Preencha todos os campos obrigatórios.");
       return;
     }
-    
+
 
     const formData = new FormData();
     formData.append("id_usuario", String(estudante?.id_usuario));
@@ -142,7 +141,7 @@ console.log(usuarioSalvo);
               <label htmlFor="name">Nome:</label>
               <input
                 type="text"
-                value={usuarioSalvo?.nome}
+                value={usuarioSalvo?.usuario.nome}
                 style={formStyle.input}
                 disabled={true}
               />
@@ -214,7 +213,7 @@ console.log(usuarioSalvo);
               <label htmlFor="chRequired">CH Pretendida:</label>
               <input
                 type="text"
-                value={horasPretendidas} 
+                value={horasPretendidas}
                 onChange={(e) => setPedido({ horasPretendidas: e.target.value })}
                 style={formStyle.input}
               />
@@ -230,10 +229,10 @@ console.log(usuarioSalvo);
           >
             <div style={{ flex: 1 }}>
               <select
-              id="selectCategoria" 
-              style={formStyle.input} 
-              value={categoria} 
-              onChange={(e) => setPedido({ categoria: e.target.value, subcategoria: "", tipo: ""})}>
+                id="selectCategoria"
+                style={formStyle.input}
+                value={categoria}
+                onChange={(e) => setPedido({ categoria: e.target.value, subcategoria: "", tipo: "" })}>
                 <option value=''>Selecione uma categoria</option>
                 {categorias.map((cat) => (
                   <option key={cat.value} value={cat.value}>
@@ -243,23 +242,23 @@ console.log(usuarioSalvo);
               </select>
             </div>
             {categoria === '1' &&
-            <div style={{ flex: 1 }}>
-              <select 
-              style={formStyle.input} 
-              value={subcategoria} 
-              onChange={(e) => setPedido({ subcategoria: e.target.value })}>
-                <option value="">Selecione uma subcategoria</option>
-                {Object.entries(categorias.find(cat => cat.value === categoria)?.subcategorias || {}).map(([key, value]) => (
-                  <option key={key} value={key}>{value.nome}</option>
-                ))}
-              </select>
-            </div>}
+              <div style={{ flex: 1 }}>
+                <select
+                  style={formStyle.input}
+                  value={subcategoria}
+                  onChange={(e) => setPedido({ subcategoria: e.target.value })}>
+                  <option value="">Selecione uma subcategoria</option>
+                  {Object.entries(categorias.find(cat => cat.value === categoria)?.subcategorias || {}).map(([key, value]) => (
+                    <option key={key} value={key}>{value.nome}</option>
+                  ))}
+                </select>
+              </div>}
             <div style={{ flex: 1 }}>
               <select style={formStyle.input} value={tipo} onChange={(e) => setPedido({ tipo: e.target.value })}>
-              <option value="">Selecione um tipo</option>
-            {Object.entries(categorias.find(cat => cat.value === categoria)?.atividades || categorias.find(cat => cat.value === categoria)?.subcategorias?.[subcategoria]?.atividades || {}).map(([key, value]) => (
-              <option key={key} value={key}>{value}</option>
-            ))}
+                <option value="">Selecione um tipo</option>
+                {Object.entries(categorias.find(cat => cat.value === categoria)?.atividades || categorias.find(cat => cat.value === categoria)?.subcategorias?.[subcategoria]?.atividades || {}).map(([key, value]) => (
+                  <option key={key} value={key}>{value}</option>
+                ))}
               </select>
             </div>
           </div>
@@ -292,7 +291,7 @@ console.log(usuarioSalvo);
               styles={{
                 width: 150,
               }}
-              onClick={() => {resetPedido(), navigate("/menu")}}
+              onClick={() => { resetPedido(), navigate("/menu") }}
             />
             <FormButton
               value={"Salvar"}

@@ -15,9 +15,10 @@ export interface FormButtonProps {
     name: string;
     value: string;
     disabled?: boolean;
+    hideButton?: boolean;
     onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
-export const FormButton = ({ type, name, value, disabled, onClick, styles }) => {
+export const FormButton = ({ type, name, value, disabled, onClick, styles, hideButton }) => {
     return (
         <button
             type={type}
@@ -27,6 +28,7 @@ export const FormButton = ({ type, name, value, disabled, onClick, styles }) => 
             onClick={onClick}
             style={{...buttonStyles, ...styles}}
             disabled={disabled}
+            hidden={hideButton}
         >
             {value}
         </button>
