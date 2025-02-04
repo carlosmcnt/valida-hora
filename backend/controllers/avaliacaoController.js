@@ -1,5 +1,5 @@
 const Pedido = require('../models/Pedido');
-const { categorias, cursoMapping, statusMapping } = require('../utils/mapeamento'); // Importando os mapeamentos
+const { categorias, cursoMapping, statusMapping } = require('../utils/mapeamento'); 
 
 class AvaliacaoController {
     
@@ -85,7 +85,7 @@ class AvaliacaoController {
 
             const pedido = result.rows[0];
 
-            console.log("Pedido retornado do banco:", pedido); // Log para depuração
+            console.log("Pedido retornado do banco:", pedido); 
 
             const categoriaKey = `categoria${pedido.categoria}`;
             const categoria = categorias[categoriaKey];

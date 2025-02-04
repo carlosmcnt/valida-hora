@@ -7,4 +7,3 @@ class CancelamentoService {
 }
 
 module.exports = new CancelamentoService();
-
