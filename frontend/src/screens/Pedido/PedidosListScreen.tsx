@@ -28,7 +28,7 @@ const PedidosListScreen = () => {
   const handleDownloadPedidoTXT = async (idPedido: number) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/exportacao/download-pedido/${idPedido}`,
+        `http://localhost:3000/exportacao/exportar-pedido/${idPedido}`,
         { responseType: "blob" } 
       );
 

@@ -18,7 +18,7 @@ class Exportacao {
             })
             .catch((error) => {
                 console.error('Erro ao conectar ao banco de dados:', error);
-                this.client = null; 
+                this.client = null;
             });
     }
 
@@ -40,7 +40,6 @@ class Exportacao {
         }
     }
 
-    
     async buscarArquivoPorUsuario(id_usuario) {
         try {
             const query = `
@@ -49,30 +48,43 @@ class Exportacao {
                 ORDER BY data_criacao DESC LIMIT 1
             `;
             const result = await this.client.query(query, [id_usuario]);
-            return result.rows;
+            return result.rows[0]; 
         } catch (error) {
             console.error('Erro ao buscar arquivo:', error);
             throw new Error('Erro ao buscar arquivo do banco de dados.');
         }
-    } 
+    }
 
     async buscarPedidoAprovadoPorId(id_pedido) {
         try {
-            const query = 
-                `SELECT nome_arquivo, conteudo FROM exportacoes
-                WHERE id_pedido = $1
-                ORDER BY data_criacao DESC LIMIT 1`;
-    
+            const query = `
+                SELECT id_pedido, id_usuario, nome, matricula_aluno, id_curso, descricao, 
+                       data_inicio, data_fim, ch_total, ch_pretendida, categoria, subcategoria, tipo
+                FROM pedidos
+                WHERE id_pedido = $1 AND status = 1
+            `;
+
             const result = await this.client.query(query, [id_pedido]);
-            
-            
-            return result.rows;
+
+            if (result.rows.length === 0) {
+                return null;
+            }
+
+            return result.rows[0]; 
         } catch (error) {
-            console.error('Erro ao buscar arquivo do pedido:', error);
-            throw new Error('Erro ao buscar arquivo do pedido no banco de dados.');
+            console.error('Erro ao buscar pedido aprovado por ID:', error);
+            throw new Error('Erro ao buscar pedido aprovado no banco de dados.');
         }
     }
+
     
+    async salvarExportacao(id_usuario, nome_arquivo, conteudo) {
+        const query = `
+            INSERT INTO exportacoes (id_usuario, nome_arquivo, conteudo, data_criacao)
+            VALUES ($1, $2, $3, NOW())
+        `;
+        await this.client.query(query, [id_usuario, nome_arquivo, conteudo]);
+    }
 }
 
 module.exports = new Exportacao();
