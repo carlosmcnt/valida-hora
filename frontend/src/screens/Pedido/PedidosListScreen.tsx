@@ -25,27 +25,29 @@ const PedidosListScreen = () => {
     }
   };
 
-  const handleExportTXT = async (id) => {
+  const handleDownloadPedidoTXT = async (idPedido: number) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/exportacao/download/${id}`,
-        { responseType: "blob" }
+        `http://localhost:3000/exportacao/download-pedido/${idPedido}`,
+        { responseType: "blob" } 
       );
-  
+
       const url = URL.createObjectURL(new Blob([response.data]));
+
       const link = document.createElement("a");
       link.href = url;
-      link.download = `pedidos_${id}.txt`;
+      link.download = `pedido_${idPedido}.txt`;
+      
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      
     } catch (error) {
-      alert("Erro ao exportar o arquivo.");
+      alert("Erro ao baixar o arquivo.");
       console.error(error);
     }
   };
   
-
   useEffect(() => {
     fetchPedidos();
   }, []);
@@ -128,7 +130,7 @@ const PedidosListScreen = () => {
               {pedido.status === "aprovado" ? (
                 <div>
                   <button
-                    onClick={() => handleExportTXT(pedido.id_pedido)}
+                    onClick={() => handleDownloadPedidoTXT(pedido.id_pedido)}
                     style={{
                       background: "#BCC4D1",
                       border: "none",
