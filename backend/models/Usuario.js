@@ -82,10 +82,10 @@ class Usuario {
         }
     
         
-        const senhaDescriptografada = descriptografarSenha(usuario.senha);
+        // const senhaDescriptografada = descriptografarSenha(usuario.senha);
     
       
-        if (senhaDescriptografada !== senha) {
+        if (usuario.senha !== senha) {
             return { success: false, message: 'Senha incorreta' };
         }
     

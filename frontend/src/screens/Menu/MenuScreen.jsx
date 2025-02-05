@@ -8,8 +8,9 @@ const MenuScreen = () => {
   const navigate = useNavigate();
   const usuarioSalvo = JSON.parse(localStorage.getItem("usuario"));
   const handleRealizarPedido = () => {
-    navigate("/pedido"); // Redireciona para a rota do formulário de pedido
+    navigate("/pedido/criar"); // Redireciona para a rota do formulário de pedido
   };
+  const userType = usuarioSalvo.usuario.tipo;
 
   return (
     <div
@@ -23,16 +24,24 @@ const MenuScreen = () => {
       }}
     >
       <HeaderPage style={style} />
-      <h2>Olá {usuarioSalvo?.nome}, o que você deseja fazer?</h2>
+      <h2>Olá {usuarioSalvo?.usuario.nome}, o que você deseja fazer?</h2>
       <FormButton
         value={"Realizar Pedido"}
         onClick={handleRealizarPedido}
         styles={{ width: 500 }}
+        hideButton={userType === "avaliador"}
       />
       <FormButton
         value={"Histórico de Pedido"}
         styles={{ width: 500 }}
         onClick={() => alert("Em breve!")}
+        hideButton={userType === "avaliador"}
+      />
+      <FormButton
+        value={"Consultar Pedidos"}
+        styles={{ width: 500 }}
+        onClick={() => navigate("/pedido/lista")}
+        hideButton={userType === "estudante"}
       />
     </div>
   );

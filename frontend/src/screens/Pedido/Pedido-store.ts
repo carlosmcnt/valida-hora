@@ -10,6 +10,8 @@ interface PedidoState {
   subcategoria: string;
   tipo: string;
   comprovante: File | null;
+  status: number,
+  carga_horaria_aprovada: number,
   setPedido: (pedido: Partial<PedidoState>) => void;
   resetPedido: () => void;
 }
@@ -24,6 +26,8 @@ const usePedidoStore = create<PedidoState>((set) => ({
   subcategoria: "",
   tipo: "",
   comprovante: null,
+  status: 0,
+  carga_horaria_aprovada: 0,
 
   setPedido: (pedido) => set((state) => ({ ...state, ...pedido })),
   resetPedido: () =>
