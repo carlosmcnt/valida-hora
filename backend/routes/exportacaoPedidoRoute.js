@@ -10,3 +10,6 @@ router.get('/download/:id_usuario', ExportacaoPedidoController.baixarArquivo);
 router.get('/download-pedido/:id_pedido', ExportacaoPedidoController.baixarArquivoPorPedido);
 
 module.exports = router;
+
+
+
