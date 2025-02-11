@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { cursos, formatarData, statusMapping } from "./Pedido-utils";
@@ -15,7 +15,7 @@ const PedidoDetalhesScreen = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Estados locais para avaliação do pedido
+
   const [status, setStatus] = useState(""); 
   const [cargaHorariaAprovada, setCargaHorariaAprovada] = useState(""); 
   const [comentario, setComentario] = useState("");
@@ -28,7 +28,7 @@ const PedidoDetalhesScreen = () => {
         );
         setPedido(response.data);
 
-        // Definir os valores iniciais com os dados do pedido
+        
         setStatus(response.data.status || "");
         setCargaHorariaAprovada(response.data.carga_horaria_aprovada || "");
         setComentario(response.data.comentario || "");
@@ -49,7 +49,7 @@ const PedidoDetalhesScreen = () => {
 
     const dadosAvaliacao = {
       status,
-      ch_aprovada: Number(cargaHorariaAprovada), // Converter para número
+      ch_aprovada: Number(cargaHorariaAprovada), 
       comentario,
     };
 
@@ -61,12 +61,42 @@ const PedidoDetalhesScreen = () => {
 
       alert("Pedido avaliado com sucesso!");
 
-      navigate(-1); // Redirecionar para a lista de pedidos
+      navigate(-1); 
     } catch (error) {
       alert("Erro ao avaliar pedido.");
       console.error(error);
     }
   };
+
+  
+  const handleDownloadComprovante = async () => {
+    if (!id) {
+      alert("ID do pedido não encontrado.");
+      return;
+    }
+  
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/pedidos/${id}/comprovante`, 
+        { responseType: "blob" } 
+      );
+  
+      
+      const url = URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `comprovante_${id}.pdf`; 
+  
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      alert("Erro ao baixar o comprovante.");
+      console.error(error);
+    }
+  };
+  
 
   return (
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: 16 }}>
@@ -118,7 +148,7 @@ const PedidoDetalhesScreen = () => {
             />
          
             <strong>Comprovantes:</strong>
-            <button style={{ border: "none", background: "none", marginLeft: 10 }} type="button">
+            <button style={{ border: "none", background: "none", marginLeft: 10 }} type="button" onClick={handleDownloadComprovante}>
               <img src={barema} alt="comprovante" style={{ width: 25 }} />
             </button>
           </div>
