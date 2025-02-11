@@ -172,6 +172,7 @@ const PedidosListScreen = () => {
       </div>
     </div>
   );
+  
 };
 
 export default PedidosListScreen;
